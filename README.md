@@ -22,11 +22,11 @@ This project implements the **control section of a multicycle datapath for a Mic
 ### Inputs:
 - `clk`, `reset`: Clock and Reset
 - `opcode[5:0]`, `funct[5:0]`: Instruction fields
+![image](https://github.com/user-attachments/assets/542eaae5-c556-4340-9efa-7c7c94a61e0b)
 
 ### Outputs:
 - Control signals: `MemRead`, `MemWrite`, `RegWrite`, `PCWrite`, etc.
 - ALU and register control: `ALUSrcX`, `ALUSrcY`, `ALUFunc`, `RegDst`, etc.
-![image](https://github.com/user-attachments/assets/542eaae5-c556-4340-9efa-7c7c94a61e0b)
 
 ---
 
