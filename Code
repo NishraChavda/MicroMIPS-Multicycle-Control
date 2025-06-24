@@ -1,0 +1,145 @@
+module multicycle_MicroMIPS(
+    input clk,
+    input reset,
+    input [5:0] opcode,
+    input [5:0] funct,
+    output reg MemRead, MemWrite, irwrite, RegWrite, PCWrite,instdata,ALUZero,
+    output reg [1:0] RegDst, RegInSrc,jumpAddr,
+    output reg [2:0] PCSrc, ALUSrcX, ALUSrcY,
+    output reg [3:0] ALUFunc,
+	 output reg [31:0] ALUout
+);
+parameter [3:0]
+    STATE_0 = 4'b0000,  // Instruction Fetch
+    STATE_1 = 4'b0001,  // Instruction Decode
+    STATE_2 = 4'b0010,  // Compute Memory Address (lw/sw)
+    STATE_3 = 4'b0011,  // Memory Read (lw)
+    STATE_4 = 4'b0100,  // Write Back (lw result to register)
+    STATE_5 = 4'b0101,  // Jump / Branch Execution
+    STATE_6 = 4'b0110,  // Memory Write (sw)
+    STATE_7 = 4'b0111,  // ALU Execution
+    STATE_8 = 4'b1000;  // ALU Write Back
+
+reg [3:0] p_state, n_state;
+initial p_state=STATE_0;
+always@(*)
+begin
+n_state=STATE_0;
+case(p_state)
+STATE_0:
+begin
+instdata=0;
+MemRead=1;
+irwrite=1;
+ALUSrcX=0;
+ALUSrcY=0;
+ALUFunc=0;
+PCSrc=3'b011;
+PCWrite=1;
+n_state=STATE_1;
+end
+STATE_1:
+begin
+instdata=0;
+MemRead=1;
+irwrite=1;
+ALUSrcX=0;
+ALUSrcY=3'b011;
+ALUFunc=0;
+PCSrc=3'b011;
+PCWrite=1;
+if ((opcode==6'b000010 ||  opcode==6'b000001 || opcode==6'b000100 || opcode==6'b000101 || opcode==6'b000011)||(opcode==6'b000000 &&(funct==6'b001000 || funct==6'b001100)))
+n_state=STATE_5;
+else if (opcode==6'b100011 ||opcode==6'b101011 )
+n_state=STATE_2;
+else
+n_state=STATE_7;
+end
+STATE_2:
+begin
+ALUSrcX=3'b001;
+ALUSrcY=3'b010;
+ALUFunc=0;
+if (opcode==6'b101011) 
+n_state=STATE_6;
+else
+n_state=STATE_3;
+end
+STATE_3:
+begin
+instdata=1;
+MemRead=1;
+n_state=STATE_4;
+end
+STATE_4:
+begin
+RegDst=0;
+RegInSrc=0;
+RegWrite=1;
+n_state=STATE_0;
+end
+STATE_5:
+begin
+ALUSrcX=1;
+ALUSrcY=1;
+ALUFunc=3'b001;
+if (opcode==6'b000010 || opcode==6'b000011)
+jumpAddr=2'b0;
+else if (opcode==6'b000000 && funct ==6'b001100)
+jumpAddr=2'b1;
+else
+jumpAddr=1'bx;
+
+if (opcode==6'b000010 || opcode==6'b000011 || (opcode==6'b000000 && funct==6'b001100))
+PCSrc=0;
+else if (opcode==6'b000000 && funct==6'b001000)
+PCSrc=1;
+else if (opcode==6'b000001 || opcode==6'b000100 || opcode==6'b000101)
+PCSrc=2'b01;
+
+if (opcode==6'b000010 || opcode==6'b000011 || (opcode==6'b000000 && (funct==6'b0010000 || funct==6'b001100))) 
+PCWrite=1;
+if (opcode==6'b000100 || opcode==6'b000101)
+ALUZero=1;
+if (opcode==6'b000001)
+ALUout=31'b10000000000000000000000;
+
+if (opcode==6'b000011)
+begin
+RegDst=3'b010;
+RegInSrc=1;
+RegWrite=1;
+end
+n_state=STATE_0;
+end
+
+STATE_6:
+begin
+instdata=1;
+MemWrite=1;
+n_state=STATE_0;
+end
+
+STATE_7:
+begin
+ALUSrcX=1;
+ALUSrcY=(opcode!=6'b000000)?2'b10:2'b01;
+n_state=STATE_8;
+end
+STATE_8:
+begin
+RegDst=(opcode==6'b000000)?0:1;
+RegInSrc=1;
+RegWrite=1;
+n_state=STATE_0;
+end
+endcase
+end
+always@(posedge clk or posedge reset)
+begin
+if(reset)
+p_state<=STATE_0;
+else
+p_state<=n_state;
+end
+endmodule
