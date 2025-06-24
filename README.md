@@ -47,6 +47,8 @@ This project implements the **control section of a multicycle datapath for a Mic
 ---
 ![image](https://github.com/user-attachments/assets/0cb98665-57f8-437a-ac43-0042c0956131)
 
+![image](https://github.com/user-attachments/assets/1e20d391-9e4b-46a5-b019-b09ed78b2b29)
+
 
 
 
