@@ -4,7 +4,7 @@ This project implements the **control section of a multicycle datapath for a Mic
 
 ---
 
-## 🚀 Features
+## Features
 
 - RTL implementation in Verilog
 - FSM-based control logic (9 states)
@@ -17,7 +17,7 @@ This project implements the **control section of a multicycle datapath for a Mic
 
 ---
 
-## 🧱 Module Interface
+## Module Interface
 
 ### Inputs:
 - `clk`, `reset`: Clock and Reset
@@ -26,10 +26,11 @@ This project implements the **control section of a multicycle datapath for a Mic
 ### Outputs:
 - Control signals: `MemRead`, `MemWrite`, `RegWrite`, `PCWrite`, etc.
 - ALU and register control: `ALUSrcX`, `ALUSrcY`, `ALUFunc`, `RegDst`, etc.
+![image](https://github.com/user-attachments/assets/542eaae5-c556-4340-9efa-7c7c94a61e0b)
 
 ---
 
-## 📊 FSM States
+## FSM States
 
 | State     | Operation             |
 |-----------|------------------------|
@@ -44,40 +45,8 @@ This project implements the **control section of a multicycle datapath for a Mic
 | STATE_8   | ALU Write Back         |
 
 ---
+![image](https://github.com/user-attachments/assets/0cb98665-57f8-437a-ac43-0042c0956131)
 
-## 🔍 Files
 
-- `control_unit.v`: Main Verilog file (FSM-based control logic)
-- `README.md`: Project documentation
-- `testbench.v` (optional): Add your testbench for simulation
-- `fsm_diagram.png` (optional): Visual diagram of FSM states and transitions
 
----
-
-## 🛠️ Tools Used
-
-- Verilog HDL
-- ModelSim / Vivado / GTKWave (for simulation)
-- Git & GitHub
-
----
-
-## 📷 Demo
-
-> *Add FSM diagram or simulation waveform screenshots here.*
-
----
-
-## 📚 Reference
-
-- Computer Organization and Design by Patterson & Hennessy
-- MIPS and MicroMIPS Architecture Documentation
-
----
-
-## 👩‍💻 Author
-
-**[Your Name]** – [Your LinkedIn or GitHub profile link]
-
----
 
